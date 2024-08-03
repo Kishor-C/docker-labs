@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+    frontend:
+        image: classpathio/hn-service
+        volumes:
+            - my-named-global-volume:/my-volumes/named-global-volume
+            - /tmp:/my-volumes/host-volume
+            - /home:/my-volumes/readonly-host-volume:ro
+    backend: 
+        image: classpathio/hn-service
+        deploy:
+            mode: replicated 
+            replicas: 4
+    db:
+        image: "postgres:latest"
+        environment:
+          DB: mydb
+          USER: "test"
+    kafka:
+        image: wurstmeister/kafka:2.11-0.11.0.3
+        depends_on:
+        - zookeeper
+    zookeeper:
+        image: wurstmeister/zookeeper
+        deploy:
+            mode: replicated
+            replicas: 6
+volumes:
+    my-named-global-volume:
+
